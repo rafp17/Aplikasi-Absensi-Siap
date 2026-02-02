@@ -1,0 +1,84 @@
+/* Sidebar Custom Scrollbar */
+aside::-webkit-scrollbar {
+    width: 5px;
+}
+
+aside::-webkit-scrollbar-track {
+    background: #000;
+}
+
+aside::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}
+
+/* Animasi hover untuk card aplikasi */
+.app-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.3); /* Shadow merah tipis */
+}
+
+/* Background gradasi halus untuk main content */
+.main-gradient {
+    background: linear-gradient(135deg, #0f0f0f 0%, #000000 100%);
+}
+
+/* Animasi transisi sidebar */
+#sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Overlay hitam transparan */
+#sidebarOverlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Responsivitas untuk area konten di mobile */
+@media (max-width: 1023px) {
+    main {
+        padding-top: 1rem;
+    }
+}
+
+/* --- SIAP Logo Styles --- */
+
+/* Container utama di header sidebar */
+.sidebar-header-logo {
+    display: flex;
+    align-items: center; /* DIPERBAIKI: Sebelumnya items-center */
+    justify-content: center;
+    height: 5rem; /* Sama dengan h-20 */
+    padding: 0 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Wrapper SVG agar fleksibel */
+.siap-logo-wrapper {
+    width: 100px; 
+    transition: all 0.3s ease-in-out;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Saat mode Desktop sidebar-mini aktif */
+@media (min-width: 1024px) {
+    .sidebar-mini .siap-logo-wrapper {
+        width: 45px; /* Mengecil saat sidebar ditutup */
+    }
+    
+    .sidebar-mini .sidebar-header-logo {
+        padding: 0;
+        justify-content: center; /* Pastikan tetap di tengah saat mini */
+    }
+
+    .sidebar-mini #sidebar-header-text {
+        display: none;
+    }
+}

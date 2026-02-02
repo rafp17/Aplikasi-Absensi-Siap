@@ -1,0 +1,57 @@
+/* Update CSS agar cocok dengan tema Gelap Dashboard */
+
+.card {
+    background: #1f2937; /* Gray-800 */
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #e5e7eb; /* Light Gray */
+}
+
+/* Pastikan input terbaca */
+select, input[type="text"], input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #ffffff; /* Input tetap putih agar teks hitam terlihat jelas */
+    color: #000000;
+    box-sizing: border-box;
+}
+
+#durasi, #ttd {
+    color: #f87171; /* Red-400 */
+    font-weight: bold;
+}
+
+button#kirim {
+    background-color: #4b5563;
+    color: white;
+    cursor: not-allowed;
+}
+
+button#kirim:not(:disabled) {
+    background-color: #dc2626; /* Red-600 (SIAP APP Theme) */
+    cursor: pointer;
+}
+
+button#kirim:not(:disabled):hover {
+    background-color: #b91c1c;
+}
+
+.dokumen-item {
+    background: #374151;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px border-gray-600;
+}

@@ -1,0 +1,48 @@
+/* Custom Scrollbar untuk Table Responsive */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #1f2937; 
+    border-radius: 4px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #4b5563; 
+    border-radius: 4px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; 
+}
+
+/* Modal Transition */
+.modal {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-content {
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+.modal.active .modal-content {
+    transform: scale(1);
+}
+
+/* Form Inputs di Dark Mode */
+.dark-input {
+    background-color: #374151; /* gray-700 */
+    border-color: #4b5563; /* gray-600 */
+    color: white;
+}
+
+.dark-input:focus {
+    border-color: #dc2626; /* red-600 */
+    
+    /* PERBAIKAN: Mengganti ring-color dengan box-shadow */
+    outline: none; /* Hilangkan garis biru bawaan browser */
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.5); /* Efek ring merah transparan */
+}
