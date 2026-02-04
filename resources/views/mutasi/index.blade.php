@@ -129,7 +129,7 @@
                     <label class="block text-gray-400 mb-1 text-sm">Pegawai <span class="text-red-500">*</span></label>
                     <select name="pegawai_id" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 focus:ring-0" required>
                         <option value="">-- Pilih Pegawai --</option>
-                        @foreach(\App\Models\Pegawai::all() as $p) 
+                        @foreach(\App\Models\User::all() as $p) 
                             <option value="{{ $p->id }}">{{ $p->nama }} - {{ $p->nip ?? '' }}</option>
                         @endforeach
                     </select>

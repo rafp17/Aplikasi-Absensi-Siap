@@ -3,24 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Models\UsulanFile;
+use App\Models\DocumentTrack; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage; // Wajib ada untuk fitur upload file
+use Illuminate\Support\Facades\Storage;
 
 class UsulanFileController extends Controller
 {
     /**
      * Menampilkan halaman form (View)
-     * Pastikan Route '/plt' mengarah ke method ini jika ingin menampilkan halaman index.blade.php
      */
     public function index()
     {
-        // Jika Bung menggunakan method ini untuk menampilkan halaman web:
-        return view('plt.index'); 
-        
-        // TAPI jika method ini khusus untuk API JSON (seperti kode Bung sebelumnya), biarkan begini:
-        // $files = UsulanFile::latest()->get();
-        // return response()->json($files);
+        return view('rekom-katim.index'); 
+    }
+
+    /**
+     * Menampilkan Halaman Tracking Dokumen (MODE PRESENTASI)
+     * Kode ini dibuat statis agar tidak perlu database untuk menampilkan alur.
+     */
+    public function track($id)
+    {
+        // Membuat objek dokumen buatan (dummy) agar tidak perlu cek database
+        $dokumen = (object) [
+            'id' => $id,
+            'jenis' => 'Usulan PLT/PLH'
+        ];
+
+        // Daftar alur dokumen statis sesuai permintaan untuk materi presentasi
+        $tracks = collect([
+            (object)[
+                'status' => 'Admin BKPSDM', 
+                'keterangan' => 'Dokumen anda masih berada di admin BKPSDM', 
+                'tanggal' => now()->subHours(5)
+            ],
+            (object)[
+                'status' => 'SEKDA', 
+                'keterangan' => 'Dokumen anda sudah di serahkan kepada SEKDA', 
+                'tanggal' => now()->subHours(4)
+            ],
+            (object)[
+                'status' => 'SEKDA', 
+                'keterangan' => 'Dokumen anda sedang di lakukan pengecheck an oleh SEKDA', 
+                'tanggal' => now()->subHours(3)
+            ],
+            (object)[
+                'status' => 'SEKDA', 
+                'keterangan' => 'Dokumen anda telah di acc oleh SEKDA', 
+                'tanggal' => now()->subHours(2)
+            ],
+            (object)[
+                'status' => 'BUPATI', 
+                'keterangan' => 'Dokumen anda sedang di serahkan kepada BUPATI', 
+                'tanggal' => now()->subHours(1)
+            ],
+            (object)[
+                'status' => 'BUPATI', 
+                'keterangan' => 'Dokumen anda sedang di lakukan pengecheck an oleh BUPATI', 
+                'tanggal' => now()->subMinutes(30)
+            ],
+            (object)[
+                'status' => 'BUPATI', 
+                'keterangan' => 'Dokumen anda sudah di acc oleh BUPATI', 
+                'tanggal' => now()
+            ],
+        ]);
+
+        return view('tracking.index', compact('dokumen', 'tracks'));
     }
 
     /**
@@ -28,45 +77,40 @@ class UsulanFileController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input (Menjaga agar data yang masuk sesuai aturan)
         $validated = $request->validate([
-            'jenis'          => 'required|string',
-            'alasan'         => 'nullable|string',
-            'nama_jabatan'   => 'nullable|string',
-            'eselon'         => 'nullable|string',
-            
-            // --- KOLOM BARU ---
+            'jenis'             => 'required|string',
+            'alasan'            => 'nullable|string',
+            'nama_jabatan'      => 'nullable|string',
+            'eselon'            => 'nullable|string',
             'tujuan_pengiriman' => 'nullable|string', 
-            
-            'tgl_mulai'      => 'nullable|date',
-            'tgl_selesai'    => 'nullable|date',
-            'penandatangan'  => 'nullable|string',
-            
-            // Validasi File (Pastikan nama input file di JS/HTML Bung adalah 'file_sk' atau sesuaikan di sini)
-            // Saya set maksimal 10MB (10240 KB)
-            'file_sk'        => 'required|file|mimes:pdf,doc,docx,jpg,png|max:10240', 
+            'tgl_mulai'         => 'nullable|date',
+            'tgl_selesai'       => 'nullable|date',
+            'penandatangan'     => 'nullable|string',
+            'file_sk'           => 'required|file|mimes:pdf,doc,docx,jpg,png|max:10240', 
         ]);
 
-        // 2. Proses Upload File
         if ($request->hasFile('file_sk')) {
-            // File akan disimpan di folder: storage/app/public/dokumen_usulan
             $path = $request->file('file_sk')->store('dokumen_usulan', 'public');
-            $validated['file_sk'] = $path; // Simpan alamat path-nya ke database
+            $validated['file_sk'] = $path;
         }
 
-        // 3. Tambahan Data Otomatis
-        $validated['uploaded_at'] = now(); // Isi kolom uploaded_at dengan jam sekarang
+        $validated['uploaded_at'] = now();
         
-        // 4. Simpan ke Database (Create)
-        UsulanFile::create($validated);
+        $newFile = UsulanFile::create($validated);
 
-        // 5. Arahkan ke route 'dashboard'
-        return redirect()->route('dashboard')->with('success', 'Usulan berhasil dikirim! Data otomatis masuk riwayat.');
+        // Tetap simpan track pertama di database jika suatu saat ingin digunakan kembali
+        DocumentTrack::create([
+            'usulan_file_id' => $newFile->id,
+            'status'         => 'Admin BKPSDM',
+            'keterangan'     => 'Dokumen anda masih berada di admin BKPSDM',
+            'tanggal'        => now(),
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Usulan berhasil dikirim! Posisi dokumen sekarang berada di Admin BKPSDM.');
     }
 
     /**
      * API: Menampilkan riwayat file yang dikirim HARI INI
-     * (Dipakai oleh Script JS untuk sidebar riwayat)
      */
     public function today()
     {

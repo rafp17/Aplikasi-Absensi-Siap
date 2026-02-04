@@ -90,10 +90,20 @@
                     <span class="ml-3 nav-text">Mutasi</span>
                 </a>
 
-                <a href="{{ route('usulan.files') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-gray-800 {{ request()->is('rekom-katim*') ? 'bg-gray-800 border-l-4 border-red-600' : '' }}">
+                <a href="{{ route('rekom-katim.index') }}" class="nav-item flex items-center p-3 rounded-lg hover:bg-gray-800 {{ request()->is('rekom-katim*') ? 'bg-gray-800 border-l-4 border-red-600' : '' }}">
                     <i class="fas fa-file-signature w-6 text-center"></i>
                     <span class="ml-3 nav-text">Rekom Katim</span>
                 </a>
+
+                <hr class="border-gray-800 my-4">
+
+                <form action="{{ route('logout') }}" method="POST" class="nav-item">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center p-3 rounded-lg text-red-500 hover:bg-red-900/20 transition-colors">
+                        <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                        <span class="ml-3 nav-text">Keluar</span>
+                    </button>
+                </form>
             </nav>
         </aside>
 

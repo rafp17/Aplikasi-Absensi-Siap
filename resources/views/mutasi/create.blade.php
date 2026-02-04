@@ -99,7 +99,7 @@
                 <a href="{{ route('mutasi.index') }}" class="px-6 py-2 rounded bg-gray-600 text-white hover:bg-gray-500 transition">Batal</a>
                 <button type="submit" class="px-6 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition shadow-lg shadow-red-900/50">Simpan Data</button>
             </div>
-        </form>
+        </form> 
     </div>
 </div>
 @endsection
