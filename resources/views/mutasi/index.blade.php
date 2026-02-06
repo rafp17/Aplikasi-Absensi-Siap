@@ -51,7 +51,7 @@
                     <thead class="bg-gray-700 text-gray-200 uppercase text-sm font-bold">
                         <tr>
                             <th class="p-4 border-b border-gray-600">No</th>
-                            <th class="p-4 border-b border-gray-600">Nama Pegawai</th>
+                            <th class="p-4 border-b border-gray-600">Nama Pegawai / NIP</th>
                             <th class="p-4 border-b border-gray-600">Jenis Mutasi</th>
                             <th class="p-4 border-b border-gray-600">Tgl & Tujuan</th>
                             <th class="p-4 border-b border-gray-600">No. SK</th>
@@ -62,7 +62,11 @@
                         @forelse($mutasi as $index => $item)
                         <tr class="hover:bg-gray-750 border-b border-gray-700 transition">
                             <td class="p-4">{{ $mutasi->firstItem() + $index }}</td>
-                            <td class="p-4 font-semibold text-white">{{ $item->pegawai->nama ?? '-' }}</td>
+                            <td class="p-4">
+                                {{-- Menghapus referensi $item->pegawai karena modelnya tidak ada --}}
+                                <div class="font-semibold text-white">{{ $item->nama_pegawai ?? '-' }}</div>
+                                <div class="text-xs text-gray-500">{{ $item->nip ?? '-' }}</div>
+                            </td>
                             <td class="p-4">
                                 <span class="px-2 py-1 text-xs rounded bg-blue-900 text-blue-300 border border-blue-700">
                                     {{ $item->jenis_mutasi }}
@@ -75,19 +79,16 @@
                             <td class="p-4">{{ $item->no_sk }}</td>
                             <td class="p-4 text-center">
                                 <div class="flex justify-center gap-2">
-                                    {{-- Download SK --}}
                                     @if($item->file_sk)
                                         <a href="{{ route('mutasi.download', $item->id) }}" class="p-2 bg-gray-600 rounded text-white hover:bg-gray-500" title="Download SK">
                                             <i class="fas fa-download"></i>
                                         </a>
                                     @endif
 
-                                    {{-- Edit --}}
                                     <a href="{{ route('mutasi.edit', $item->id) }}" class="p-2 bg-yellow-600 rounded text-white hover:bg-yellow-500" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    {{-- Delete --}}
                                     <form action="{{ route('mutasi.destroy', $item->id) }}" method="POST" class="form-delete inline">
                                         @csrf
                                         @method('DELETE')
@@ -115,6 +116,7 @@
         </div>
     </div>
 
+    {{-- MODAL TAMBAH --}}
     <div id="modalTambah" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-70 modal">
         <div class="bg-gray-800 w-full max-w-lg rounded-lg shadow-2xl overflow-hidden modal-content border border-gray-700">
             <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-900">
@@ -125,14 +127,15 @@
             <form action="{{ route('mutasi.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
                 @csrf
                 
-                <div>
-                    <label class="block text-gray-400 mb-1 text-sm">Pegawai <span class="text-red-500">*</span></label>
-                    <select name="pegawai_id" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 focus:ring-0" required>
-                        <option value="">-- Pilih Pegawai --</option>
-                        @foreach(\App\Models\User::all() as $p) 
-                            <option value="{{ $p->id }}">{{ $p->nama }} - {{ $p->nip ?? '' }}</option>
-                        @endforeach
-                    </select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-sm">Nama Pegawai <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_pegawai" placeholder="Nama Lengkap" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1 text-sm">NIP <span class="text-red-500">*</span></label>
+                        <input type="text" name="nip" placeholder="Masukkan NIP" class="w-full p-2 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600" required>
+                    </div>
                 </div>
 
                 <div>

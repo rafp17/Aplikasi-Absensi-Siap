@@ -19,17 +19,19 @@
                 Rekomendasi Ketua Tim
             </div>
 
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <div class="space-x-4">
-                    <button class="bg-gray-300 text-black text-sm font-bold py-3 px-6 rounded-full shadow hover:bg-gray-400 transition">
-                        <i class="fas fa-users mr-2"></i> DAFTAR NAMA PEGAWAI
-                    </button>
-                </div>
-                <button class="bg-red-600 text-white text-sm font-bold py-3 px-10 rounded-full shadow-lg hover:bg-red-700 transition transform hover:scale-105">
-                    PILIH REKOM <i class="fas fa-check-circle ml-2"></i>
-                </button>
-            </div>
-
+          <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div class="space-x-4">
+        <button class="bg-gray-300 text-black text-sm font-bold py-3 px-6 rounded-full shadow hover:bg-gray-400 transition">
+            <i class="fas fa-users mr-2"></i> DAFTAR NAMA PEGAWAI
+        </button>
+    </div>
+    
+   <a href="{{ url('pilih-rekom') }}" 
+class="bg-red-600 text-white text-sm font-bold py-3 px-10 rounded-full shadow-lg hover:bg-red-700 transition transform hover:scale-105">
+    PILIH REKOM <i class="fas fa-check-circle ml-2"></i>
+</a>
+</div>
+            
             <div class="w-full overflow-hidden border-2 border-black rounded-lg shadow-sm mb-10">
                 <table class="w-full text-center border-collapse" id="tabelPegawai">
                     <thead>
@@ -69,11 +71,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="border-2 border-black rounded-full px-6 py-3 flex items-center bg-white shadow-inner">
                     <span class="text-xs font-black text-black text-nowrap mr-3">NAMA :</span>
-                    <input type="text" id="inputNama" class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold text-red-600 outline-none" placeholder="..." readonly>
+                    <input type="text" id="inputNama" class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold text-gray-600 outline-none" placeholder="..." readonly>
                 </div>
                 <div class="border-2 border-black rounded-full px-6 py-3 flex items-center bg-white shadow-inner">
                     <span class="text-xs font-black text-black text-nowrap mr-3">JABATAN :</span>
-                    <input type="text" id="inputJabatan" class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold text-red-600 outline-none" placeholder="..." readonly>
+                    <input type="text" id="inputJabatan" class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold text-gray-600 outline-none" placeholder="..." readonly>
                 </div>
             </div>
         </div>

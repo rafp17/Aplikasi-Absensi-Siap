@@ -12,21 +12,27 @@
 
         <form action="{{ route('mutasi.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6">
             @csrf
-            {{-- Perbedaan 1: Tidak ada @method('PUT') karena ini simpan data baru --}}
 
-            <div>
-                <label class="block text-gray-400 mb-2 font-medium">Nama Pegawai</label>
-                <select name="pegawai_id" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition">
-                    <option value="">-- Pilih Pegawai --</option>
-                    @foreach($pegawai as $p)
-                        <option value="{{ $p->id }}" {{ old('pegawai_id') == $p->id ? 'selected' : '' }}>
-                            {{ $p->nama }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('pegawai_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Input Nama Pegawai Manual --}}
+                <div>
+                    <label class="block text-gray-400 mb-2 font-medium">Nama Pegawai <span class="text-red-500">*</span></label>
+                    <input type="text" name="nama_pegawai" value="{{ old('nama_pegawai') }}" placeholder="Masukkan Nama Lengkap"
+                           class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 outline-none transition" required>
+                    @error('nama_pegawai')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Input NIP Manual --}}
+                <div>
+                    <label class="block text-gray-400 mb-2 font-medium">NIP <span class="text-red-500">*</span></label>
+                    <input type="text" name="nip" value="{{ old('nip') }}" placeholder="Masukkan NIP"
+                           class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 outline-none transition" required>
+                    @error('nip')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <div>
@@ -75,21 +81,13 @@
                     <label class="block text-gray-400 mb-2 font-medium">Tujuan Pengiriman</label>
                     <select name="tujuan_pengiriman" class="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:border-red-600 outline-none">
                         <option value="">-- Pilih Tujuan --</option>
-                        
-                        <option value="BKPSDM" {{ old('tujuan_pengiriman') == 'BKPSDM' ? 'selected' : '' }}>
-                            BKPSDM
-                        </option>
-                        
-                        <option value="BKPSDM-SEKDA" {{ old('tujuan_pengiriman') == 'BKPSDM-SEKDA' ? 'selected' : '' }}>
-                            BKPSDM-SEKDA
-                        </option>
-                        
-                        <option value="BKPSDM-SEKDA-BUPATI" {{ old('tujuan_pengiriman') == 'BKPSDM-SEKDA-BUPATI' ? 'selected' : '' }}>
-                            BKPSDM-SEKDA-BUPATI
-                        </option>
+                        <option value="BKPSDM" {{ old('tujuan_pengiriman') == 'BKPSDM' ? 'selected' : '' }}>BKPSDM</option>
+                        <option value="BKPSDM-SEKDA" {{ old('tujuan_pengiriman') == 'BKPSDM-SEKDA' ? 'selected' : '' }}>BKPSDM-SEKDA</option>
+                        <option value="BKPSDM-SEKDA-BUPATI" {{ old('tujuan_pengiriman') == 'BKPSDM-SEKDA-BUPATI' ? 'selected' : '' }}>BKPSDM-SEKDA-BUPATI</option>
                     </select>
                 </div>
             </div>
+
             <div class="p-4 bg-gray-900 rounded border border-gray-700">
                 <label class="block text-gray-400 mb-2 font-medium">Upload File SK (PDF/DOC)</label>
                 <input type="file" name="file_sk" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer">

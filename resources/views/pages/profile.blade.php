@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="w-full border-2 border-black rounded-3xl py-4 px-6 text-center mb-10 shadow-sm bg-gray-50">
-                    <h1 class="text-xl font-bold text-black">{{ $pegawai->nama }}</h1>
+                    <h1 class="text-xl font-bold text-black">Rakha Bumi, S.Kom</h1>
                     <p class="text-sm font-medium text-gray-600">NIP. {{ $pegawai->nip ?? '190000000000000000' }}</p>
                 </div>
 

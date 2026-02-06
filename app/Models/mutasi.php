@@ -9,23 +9,30 @@ class Mutasi extends Model
     protected $table = 'mutasi';
     
     protected $fillable = [
-        'pegawai_id',
+        'nama_pegawai',      // Input manual
+        'nip',               // Input manual
+        'pegawai_id',        // Kosongkan saja jika input manual
         'jenis_mutasi',
         'tanggal',
         'instansi_tujuan',
         'no_sk',
         'file_sk',
+        'eselon',
+        'tujuan_pengiriman',
         'created_at',
         'updated_at',
-        'eselon',
-        'tujuan_pengiriman'
     ];
 
-    protected $dates = ['tanggal'];
+    /**
+     * Casting format tanggal agar otomatis menjadi objek Carbon
+     */
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
 
-    // Relationship dengan model Pegawai
-    public function pegawai()
-    {
-        return $this->belongsTo(Pegawai::class);
-    }
+    /**
+     * Relasi Pegawai dihapus karena model 'Pegawai' tidak ditemukan 
+     * di folder Models Anda. Data sekarang murni diambil dari 
+     * kolom 'nama_pegawai' dan 'nip' di tabel mutasi ini sendiri.
+     */
 }

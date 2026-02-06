@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mutasi;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // Penting: Tambahkan ini agar fungsi delete/download tidak error
+use Illuminate\Support\Facades\Storage;
 
 class MutasiController extends Controller
 {
@@ -17,17 +17,22 @@ class MutasiController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('perPage', 10);
         
-        $mutasi = Mutasi::with('pegawai')
+        $mutasi = Mutasi::query('')
             ->when($search, function($query) use ($search) {
-                $query->whereHas('pegawai', function($q) use ($search) {
-                    $q->where('nama', 'like', "%{$search}%");
-                })
-                ->orWhere('jenis_mutasi', 'like', "%{$search}%")
-                ->orWhere('instansi_tujuan', 'like', "%{$search}%")
-                ->orWhere('no_sk', 'like', "%{$search}%")
-                // --- TAMBAHAN BARU: Agar bisa dicari berdasarkan eselon & tujuan pengiriman ---
-                ->orWhere('eselon', 'like', "%{$search}%")
-                ->orWhere('tujuan_pengiriman', 'like', "%{$search}%");
+                // Pencarian mencakup kolom manual (nama_pegawai, nip) dan kolom lama
+                $query->where(function($q) use ($search) {
+                    $q->where('nama_pegawai', 'like', "%{$search}%")
+                      ->orWhere('nip', 'like', "%{$search}%")
+                      ->orWhereHas('pegawai', function($sub) use ($search) {
+                          $sub->where('nama', 'like', "%{$search}%")
+                              ->orWhere('nip', 'like', "%{$search}%");
+                      })
+                      ->orWhere('jenis_mutasi', 'like', "%{$search}%")
+                      ->orWhere('instansi_tujuan', 'like', "%{$search}%")
+                      ->orWhere('no_sk', 'like', "%{$search}%")
+                      ->orWhere('eselon', 'like', "%{$search}%")
+                      ->orWhere('tujuan_pengiriman', 'like', "%{$search}%");
+                });
             })
             ->orderBy('tanggal', 'desc')
             ->paginate($perPage);
@@ -37,7 +42,6 @@ class MutasiController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     * (Tambahkan function ini jika belum ada, untuk membuka halaman create)
      */
     public function create()
     {
@@ -51,14 +55,14 @@ class MutasiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pegawai_id' => 'required|exists:pegawai,id', // pastikan nama tabel di db 'pegawai' atau 'pegawais'
+            'nama_pegawai' => 'required|string|max:255',
+            'nip' => 'required|string|max:50',
+            'pegawai_id' => 'nullable|exists:pegawai,id', 
             'jenis_mutasi' => 'required|in:Kenaikan Pangkat,Masuk,Pindah Antar Instansi,Keluar',
             'tanggal' => 'required|date',
             'instansi_tujuan' => 'nullable|string|max:255',
             'no_sk' => 'required|string|max:100|unique:mutasi,no_sk',
             'file_sk' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            
-            // --- TAMBAHAN BARU: Validasi kolom baru ---
             'eselon' => 'nullable|string|max:50', 
             'tujuan_pengiriman' => 'nullable|in:BKPSDM,BKPSDM-SEKDA,BKPSDM-SEKDA-BUPATI', 
         ]);
@@ -79,7 +83,6 @@ class MutasiController extends Controller
      */
     public function edit(Mutasi $mutasi)
     {
-        // Mengambil data pegawai untuk dropdown
         $pegawai = Pegawai::all(); 
         return view('mutasi.edit', compact('mutasi', 'pegawai'));
     }
@@ -90,20 +93,19 @@ class MutasiController extends Controller
     public function update(Request $request, Mutasi $mutasi)
     {
         $validated = $request->validate([
-            'pegawai_id' => 'required|exists:pegawai,id',
+            'nama_pegawai' => 'required|string|max:255',
+            'nip' => 'required|string|max:50',
+            'pegawai_id' => 'nullable|exists:pegawai,id',
             'jenis_mutasi' => 'required|in:Kenaikan Pangkat,Masuk,Pindah Antar Instansi,Keluar',
             'tanggal' => 'required|date',
             'instansi_tujuan' => 'nullable|string|max:255',
             'no_sk' => 'required|string|max:100|unique:mutasi,no_sk,' . $mutasi->id,
             'file_sk' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-
-            // --- TAMBAHAN BARU: Validasi update kolom baru ---
             'eselon' => 'nullable|string|max:50',
             'tujuan_pengiriman' => 'nullable|in:BKPSDM,BKPSDM-SEKDA,BKPSDM-SEKDA-BUPATI',
         ]);
 
         if ($request->hasFile('file_sk')) {
-            // Hapus file lama jika ada
             if ($mutasi->file_sk) {
                 Storage::disk('public')->delete($mutasi->file_sk);
             }
@@ -142,7 +144,6 @@ class MutasiController extends Controller
             return redirect()->back()->with('error', 'File SK tidak ditemukan.');
         }
 
-        // Pastikan facade Storage sudah di-import di paling atas
         return Storage::disk('public')->download($mutasi->file_sk);
     }
 }

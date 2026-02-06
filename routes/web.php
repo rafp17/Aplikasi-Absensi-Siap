@@ -25,6 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
 
     // === DASHBOARD ===
+    // Route ini sekarang mendukung filter tanggal dinamis (Contoh: /dashboard/2026-02-05)
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/{date?}', [DashboardController::class, 'index'])->name('dashboard.filter');
 
@@ -39,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     // === MENU REKOM KATIM ===
     Route::get('/rekom-katim', [UsulanFileController::class, 'index'])->name('rekom-katim.index');
     
-    // --- FITUR TRACKING DOKUMEN (BARU) ---
+    // --- FITUR TRACKING DOKUMEN (MODE PRESENTASI STATIS) ---
     Route::get('/tracking/{id}', [UsulanFileController::class, 'track'])->name('document.track');
 
     // === MENU DOKUMEN ===
@@ -50,5 +51,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Route untuk melihat detail profil pegawai
     Route::get('/profile/{id}', [PltplhController::class, 'showProfile'])->name('profile.show');
+    
+Route::get('/pilih-rekom', function () {
+    return view('pilih-rekom'); // Memanggil file resources/views/pilih-rekom.blade.php
+});
 
 });
