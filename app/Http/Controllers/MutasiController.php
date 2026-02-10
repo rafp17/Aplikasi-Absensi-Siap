@@ -17,21 +17,14 @@ class MutasiController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('perPage', 10);
         
-        $mutasi = Mutasi::query('')
+        $mutasi = Mutasi::query() // Menghapus tanda kutip kosong yang tidak perlu
             ->when($search, function($query) use ($search) {
-                // Pencarian mencakup kolom manual (nama_pegawai, nip) dan kolom lama
                 $query->where(function($q) use ($search) {
+                    // Logika pencarian: Hanya tampilkan data jika Nama atau NIP cocok
                     $q->where('nama_pegawai', 'like', "%{$search}%")
                       ->orWhere('nip', 'like', "%{$search}%")
-                      ->orWhereHas('pegawai', function($sub) use ($search) {
-                          $sub->where('nama', 'like', "%{$search}%")
-                              ->orWhere('nip', 'like', "%{$search}%");
-                      })
-                      ->orWhere('jenis_mutasi', 'like', "%{$search}%")
-                      ->orWhere('instansi_tujuan', 'like', "%{$search}%")
-                      ->orWhere('no_sk', 'like', "%{$search}%")
-                      ->orWhere('eselon', 'like', "%{$search}%")
-                      ->orWhere('tujuan_pengiriman', 'like', "%{$search}%");
+                      // Tetap mendukung pencarian No SK jika dibutuhkan
+                      ->orWhere('no_sk', 'like', "%{$search}%");
                 });
             })
             ->orderBy('tanggal', 'desc')

@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MutasiController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RekomKatimController; // Import Controller baru
 
 // ==========================================
 // ROUTE AUTENTIKASI (Bisa diakses tanpa login)
@@ -25,7 +26,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
 
     // === DASHBOARD ===
-    // Route ini sekarang mendukung filter tanggal dinamis (Contoh: /dashboard/2026-02-05)
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/{date?}', [DashboardController::class, 'index'])->name('dashboard.filter');
 
@@ -38,9 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('mutasi/{mutasi}/download', [MutasiController::class, 'downloadSk'])->name('mutasi.download');
 
     // === MENU REKOM KATIM ===
-    Route::get('/rekom-katim', [UsulanFileController::class, 'index'])->name('rekom-katim.index');
+    // Mengarahkan ke Controller untuk mengelola tampilan Rekomendasi Ketua Tim
+    Route::get('/rekom-katim', [RekomKatimController::class, 'index'])->name('rekom-katim.index');
     
-    // --- FITUR TRACKING DOKUMEN (MODE PRESENTASI STATIS) ---
+    // --- FITUR TRACKING DOKUMEN ---
     Route::get('/tracking/{id}', [UsulanFileController::class, 'track'])->name('document.track');
 
     // === MENU DOKUMEN ===
@@ -49,11 +50,10 @@ Route::middleware(['auth'])->group(function () {
     // === DATA API ===
     Route::get('/usulan-today', [UsulanFileController::class, 'today'])->name('usulan.files.today');
 
-    // Route untuk melihat detail profil pegawai
+    // Route profil pegawai
     Route::get('/profile/{id}', [PltplhController::class, 'showProfile'])->name('profile.show');
     
-Route::get('/pilih-rekom', function () {
-    return view('pilih-rekom'); // Memanggil file resources/views/pilih-rekom.blade.php
-});
+    // === ROUTE PILIH REKOM (Via Controller) ===
+    Route::get('/pilih-rekom', [RekomKatimController::class, 'pilihRekom'])->name('pilih-rekom');
 
 });

@@ -13,9 +13,10 @@
             <h1 class="text-2xl font-bold text-white">Data Mutasi Pegawai</h1>
             
             <div class="flex gap-2 w-full md:w-auto">
+                {{-- Form Pencarian: Dioptimalkan untuk mencari nama sendiri --}}
                 <form action="{{ route('mutasi.index') }}" method="GET" class="flex w-full md:w-80">
                     <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Cari Nama / No SK / Instansi..." 
+                           placeholder="Cari Nama atau NIP Anda..." 
                            class="w-full px-4 py-2 rounded-l-lg bg-gray-800 border border-gray-700 text-white focus:outline-none focus:border-red-600">
                     <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-r-lg hover:bg-red-700 transition">
                         <i class="fas fa-search"></i>
@@ -63,7 +64,6 @@
                         <tr class="hover:bg-gray-750 border-b border-gray-700 transition">
                             <td class="p-4">{{ $mutasi->firstItem() + $index }}</td>
                             <td class="p-4">
-                                {{-- Menghapus referensi $item->pegawai karena modelnya tidak ada --}}
                                 <div class="font-semibold text-white">{{ $item->nama_pegawai ?? '-' }}</div>
                                 <div class="text-xs text-gray-500">{{ $item->nip ?? '-' }}</div>
                             </td>
@@ -102,7 +102,11 @@
                         @empty
                         <tr>
                             <td colspan="6" class="p-8 text-center text-gray-500 italic">
-                                Belum ada data mutasi.
+                                @if(request('search'))
+                                    Data untuk "{{ request('search') }}" tidak ditemukan.
+                                @else
+                                    Belum ada data mutasi.
+                                @endif
                             </td>
                         </tr>
                         @endforelse
@@ -110,6 +114,7 @@
                 </table>
             </div>
             
+            {{-- Pagination dengan Appends agar hasil pencarian tetap ada saat pindah halaman --}}
             <div class="p-4 border-t border-gray-700">
                 {{ $mutasi->appends(['search' => request('search')])->links() }}
             </div>
